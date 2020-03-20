@@ -1,34 +1,45 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { fetchSmurfs } from '../actions/smurfActions';
 
 class Smurfs extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            smurfs: []
-        }
+    componentWillMount() {
+        this.props.fetchSmurfs();
     }
 
-    componentDidMount() {
-        axios.get('/smurfs')
-            .then(res => console.log(res))
-            .then(data => this.setState({ smurfs: data }));
+    componentWillReceiveProps(nextProps) {
+        if(nextProps.newSmurf) {
+            this.props.smurfs.unshift(nextProps.newSmurf);
+        }
     }
     
     render() {
-        const smurfVillage = this .state.smurfs.map(smurf => (
-                                                            <div key={smurf.id}>
-                                                                <p>{smurf.name}</p>
-                                                                <p>{smurf.age}</p>
-                                                                <p>{smurf.height}</p>
-                                                            </div>
-        ))
+        // const smurfVillage = this.props.smurfs.map(smurf => (
+        //                                                     <div key={smurf.id}>
+        //                                                         <p>{smurf.name}</p>
+        //                                                         <p>{smurf.age}</p>
+        //                                                         <p>{smurf.height}</p>
+        //                                                     </div>
+        // ))
         return (
             <div>
                 <h3>Smurfs</h3>
+                {/* {smurfVillage} */}
             </div>
         )
     }
 }
 
-export default Smurfs;
+Smurfs.propTypes = {
+    fetchSmurfs: PropTypes.func.isRequired,
+    smurfs: PropTypes.array.isRequired,
+    newSmurf: PropTypes.object
+};
+
+const mapStateToProps = state => ({
+    smurfs: state.smurfs.items,
+    newSmurf: state.smurfs.item
+});
+
+export default connect(mapStateToProps, {fetchSmurfs})(Smurfs);

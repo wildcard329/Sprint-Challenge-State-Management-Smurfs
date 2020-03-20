@@ -1,7 +1,10 @@
 import { FETCH_SMURFS, NEW_SMURF } from './types';
+import axios from 'axios';
 
 export const fetchSmurfs = () => dispatch => {
-    fetch('/smurfs')
+    axios
+            .get('http://localhost:3333/smurfs/data')
+            .then(res => console.log(res))
             .then(smurfs => 
                 dispatch({
                     type: FETCH_SMURFS,
@@ -10,16 +13,17 @@ export const fetchSmurfs = () => dispatch => {
 };
 
 export const createSmurf = (smurfData) => dispatch => {
-    fetch('/smurfs', {
-        method: 'POST',
-        headers: {
-            'content-type': 'application/json'
-        },
-        body: JSON.stringify(smurfData)
-    })
-    .then(res => res.json())
-    .then(post => dispatch({
-        type: NEW_SMURF,
-        payload: smurf
-    }));
+    axios
+            .post('http://localhost:3333/smurfs/data', {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify(smurfData)
+            })
+            .then(res => res.json())
+            .then(smurf => dispatch({
+                type: NEW_SMURF,
+                payload: smurf
+            }));
 };
